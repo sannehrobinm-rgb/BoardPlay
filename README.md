@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎲 BoardPlay
 
-## Getting Started
+> Découvrez, comparez et gérez vos jeux de société — avec recommandations IA, carte interactive et visualisation de données.
 
-First, run the development server:
+![Status](https://img.shields.io/badge/status-en%20développement-orange)
+![Stack](https://img.shields.io/badge/stack-Next.js%20%7C%20TypeScript%20%7C%20Prisma-blue)
+
+---
+
+## 🎯 Concept
+
+BoardPlay est une plateforme fullstack dédiée aux jeux de société. Elle permet de cataloguer sa collection, de découvrir de nouveaux jeux via un moteur de recommandation IA, de visualiser les données sur une carte (localisation des joueurs) et de suivre ses parties.
+
+---
+
+## ✨ Fonctionnalités
+
+- 🃏 Catalogue de jeux avec filtres avancés
+- 🤖 Recommandation intelligente par IA
+- 🗺️ Carte interactive des joueurs (Leaflet)
+- 📊 Visualisation des statistiques (Recharts)
+- 🏆 Suivi des parties et scores
+- 📱 Interface responsive et animée
+
+---
+
+## 🛠️ Stack technique
+
+| Couche | Technologie |
+|--------|-------------|
+| Framework | Next.js 14 (App Router) |
+| Langage | TypeScript |
+| UI | React + Tailwind CSS + shadcn/ui |
+| Animations | Framer Motion |
+| Carte | Leaflet |
+| Graphiques | Recharts |
+| ORM | Prisma |
+| Base de données | PostgreSQL (Neon) |
+| IA | API LLM (Claude / OpenAI) |
+| Déploiement | Vercel |
+
+---
+
+## 🚀 Installation
 
 ```bash
+git clone https://github.com/TON_USERNAME/boardplay.git
+cd boardplay
+
+npm install
+
+cp .env.example .env.local
+# → renseigner DATABASE_URL + LLM_API_KEY
+
+npx prisma db push
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Structure du projet
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── board-games/
+│   │   ├── matches/
+│   │   └── ai/recommend/
+│   └── page.tsx
+├── components/
+│   ├── ui/
+│   ├── layout/
+│   ├── map/        # Composants Leaflet
+│   └── charts/     # Composants Recharts
+├── lib/
+│   └── db.ts
+├── types/
+└── hooks/
+prisma/
+└── schema.prisma
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🗄️ Modèles de données
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```prisma
+model BoardGame {
+  id          String   @id @default(cuid())
+  name        String
+  minPlayers  Int
+  maxPlayers  Int
+  duration    Int      # en minutes
+  category    String[]
+  rating      Float?
+  matches     Match[]
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+model Match {
+  id         String    @id @default(cuid())
+  date       DateTime  @default(now())
+  game       BoardGame @relation(fields: [gameId], references: [id])
+  gameId     String
+  players    String[]
+  winner     String?
+}
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📡 API Routes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| GET | `/api/board-games` | Liste des jeux |
+| POST | `/api/board-games` | Ajouter un jeu |
+| GET | `/api/matches` | Historique des parties |
+| POST | `/api/ai/recommend` | Recommandation IA |
+
+---
+
+## 👤 Auteur
+
+Développé par **[TON NOM]** — projet de formation développeur web fullstack.
